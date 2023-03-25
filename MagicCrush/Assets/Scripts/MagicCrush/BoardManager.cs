@@ -15,6 +15,9 @@ public class BoardManager : MonoBehaviour
 
     public const int MinPropstoMatch = 2;
 
+    private Vector3 initialPosition1;
+    private Vector3 initialPosition2;
+
     public bool isShifting{get; set;} // esto quiere decir que 
     //puede asignar un valor o evaluar un valor pero solo desde la clase.
     void Start()
@@ -45,6 +48,7 @@ public class BoardManager : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
+                /*
                 GameObject newProp = Instantiate(currentProp,
                  new Vector3(startX + (offset.x*x), 
                             startY + (offset.y*y),
@@ -52,7 +56,11 @@ public class BoardManager : MonoBehaviour
                             currentProp.transform.rotation);
 
                 newProp.name = string.Format("Prop[{0}][{1}]", x,y);
-
+*/
+                Vector2 tempPosition = new Vector2(x,y);
+                GameObject newProp = Instantiate(currentProp,tempPosition,Quaternion.identity);
+                newProp.name = string.Format("Prop[{0}][{1}]", x,y);
+                
                 do
                 {
                     idx = Random.Range(0,prefabs.Count);
@@ -73,14 +81,17 @@ public class BoardManager : MonoBehaviour
 //       Debug.Log("Final Pos " + gameObject.transform.position);
     } 
 
+
     public IEnumerator FindNullProps()
     {
+        //Debug.Log("FindNullProps");
         for(int x = 0; x < xSize; x++)
         {
             for(int y = 0; y < ySize; y++)
             {
                 if(props[x,y].GetComponent<SpriteRenderer>().sprite == null)
                 {
+                    Debug.Log("en X: " + x + " Y: " + y + "es null");
                     yield return StartCoroutine(MakePropsFall(x, y));
                     break;
                 }
@@ -102,41 +113,91 @@ public class BoardManager : MonoBehaviour
                                         float shiftDelay = 0.05f)
     {
 
+        
+
         isShifting = true;
 
-        List<SpriteRenderer> renderes = new List<SpriteRenderer>();
-        int nullProps = 0;
+        List<GameObject> nullProps = new List<GameObject>();
+
+        
+        int nullPropsCant = 0;
 
         for(int y = yStart; y < ySize; y++)
         {
-            SpriteRenderer spriteRenderer = props[x, y].GetComponent<SpriteRenderer>();
-            if (spriteRenderer.sprite == null)
+            Transform RowProps = props[x, y].GetComponent<Transform>();
+
+            if (RowProps.GetComponent<SpriteRenderer>().sprite == null)
             {
-                nullProps++;
+                nullPropsCant++;
+                GUIManager.sharedInstance.Score += 10;
+                nullProps.Add(RowProps.gameObject);
+
+                
+                yield return null;
             }
-            renderes.Add(spriteRenderer);
         }
 
-        for (int i = 0; i < nullProps; i++)
+        if (nullPropsCant>0){
+
+                for (int i = 0; i < nullPropsCant; i++)
+                {
+                    List<Transform> NonNullRowProps = new List<Transform>();
+
+                    RaycastHit2D hit = Physics2D.Raycast(nullProps[i].transform.position,Vector2.up);
+
+                    while(hit.collider != null && hit.collider.gameObject.tag == "prop"){
+                        NonNullRowProps.Add(hit.collider.transform);
+                        Debug.Log(hit.collider.GetComponent<SpriteRenderer>().sprite);
+                        hit =  Physics2D.Raycast(hit.collider.transform.position,Vector2.up);
+                    }
+
+
+                }
+
+        }
+        
+        /*
+        for (int i = 0; i < props_.Count; i++)
         {
-            GUIManager.sharedInstance.Score += 10;
+            RaycastHit2D hit = Physics2D.Raycast(props_[i].transform.position,Vector2.up);
 
-            yield return new WaitForSeconds(shiftDelay);
-            for(int j = 0; j < renderes.Count - 1; j++)
-            {
-                renderes[j].sprite = renderes[j + 1].sprite;
-                renderes[j + 1].sprite = GetNewProp(x, ySize-1);;
+            while(hit.collider != null && hit.collider.gameObject.tag == "prop"){
+
+                float swapSpeed = 0.2f;
+
+                initialPosition1 = props_[i].transform.position;
+                initialPosition2 = hit.collider.GetComponent<Transform>().position;
+
+                float t = 0.0f;
+                while (t < 1.0f)
+                {
+                    t += Time.deltaTime/swapSpeed;
+
+                    props_[i].GetComponent<Transform>().position = Vector3.Lerp(initialPosition1, initialPosition2, t);
+                    hit.collider.GetComponent<Transform>().position = Vector3.Lerp(initialPosition2, initialPosition1, t);
+                    yield return null;
+                }
+
+                hit =  Physics2D.Raycast(hit.collider.transform.position,Vector2.up);
             }
+
         }
 
+        for (int i = 0; i < props_.Count; i++)
+        {
+            props_[i].GetComponent<SpriteRenderer>().sprite = GetNewProp();
+        }
+        */
         isShifting = false;
+    
+
     }
 
-    private Sprite GetNewProp(int x, int y)
+    private Sprite GetNewProp()
     {
         List<Sprite> possibleProps = new List<Sprite>();
         possibleProps.AddRange(prefabs);
-
+        /*
         if(x>0)
         {
             possibleProps.Remove(
@@ -152,7 +213,7 @@ public class BoardManager : MonoBehaviour
             possibleProps.Remove(
                 props[x, y - 1].GetComponent<SpriteRenderer>().sprite);
         }
-
+*/
         return possibleProps[Random.Range(0, possibleProps.Count)];
     }
 
@@ -165,5 +226,4 @@ public class BoardManager : MonoBehaviour
             Destroy(Props[i]);
         }
     }
-
 }

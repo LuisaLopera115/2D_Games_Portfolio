@@ -12,8 +12,13 @@ public class Prop : MonoBehaviour
 
     public int id;
 
-        private Vector3 initialPosition1;
-        private Vector3 initialPosition2;
+    private Vector3 initialPosition1;
+    private Vector3 initialPosition2;
+
+    [SerializeField] public int xPos, yPos;
+    [SerializeField] public int xPosTarget, yPosTarget;
+    private Vector2 firstTouchPosition, secondTouchPosition;
+    private float swipeAngle;
 
     private Vector2[] adjacentDirections= new Vector2[]{
         Vector2.up,
@@ -22,10 +27,13 @@ public class Prop : MonoBehaviour
         Vector2.right
     };
 
-    public Vector3 objective;
 
     private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
+       xPosTarget = (int)transform.position.x;
+       yPosTarget = (int)transform.position.x;
+       xPos=xPosTarget;
+       yPos=xPosTarget;
         //objective = Vector3.zero;
     }
 
@@ -43,7 +51,7 @@ public class Prop : MonoBehaviour
     }
 
     private void OnMouseDown() {
-
+/*
         if (spriteRenderer.sprite == null ||
          BoardManager.ShareInstance.isShifting){
             return;
@@ -62,7 +70,7 @@ public class Prop : MonoBehaviour
                 if (CanSwipe())
                 {
                     StartCoroutine(SwapProps(previusSelected));
-                    Debug.Log(spriteRenderer.sprite);
+                    //Debug.Log(spriteRenderer.sprite);
                     
                     
                 }else{
@@ -71,6 +79,24 @@ public class Prop : MonoBehaviour
                 }
             }
         }
+
+*/
+
+        // FOR MOVIL GAME 
+        //Debug.Log("click");
+        firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+    }
+
+     private void OnMouseUp() {
+        //Debug.Log("Unclick");
+        secondTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        CalculateTheAngle();
+    }
+    
+    private void CalculateTheAngle(){
+        swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
+        Debug.Log(swipeAngle);
     }
 
     private void Update()
@@ -82,7 +108,7 @@ public class Prop : MonoBehaviour
     }
 
     private IEnumerator SwapProps(Prop newProp){
-
+        /*
         if (spriteRenderer.sprite == newProp.GetComponent<SpriteRenderer>().sprite)
         {
             yield return null;
@@ -101,7 +127,9 @@ public class Prop : MonoBehaviour
             newProp.GetComponent<Transform>().position = Vector3.Lerp(initialPosition1, initialPosition2, t);
             this.transform.position = Vector3.Lerp(initialPosition2, initialPosition1, t);
             yield return null;
-        }
+        }*/
+
+
         
         FindAllMatches();
         previusSelected.FindAllMatches();
@@ -176,8 +204,8 @@ public class Prop : MonoBehaviour
             // //Debug.Log("hay match");
             foreach (GameObject prop in matchingProps)
             {
-                Destroy(prop.gameObject);
-               // prop.GetComponent<SpriteRenderer>().sprite = null;
+                //Destroy(prop.gameObject);
+               prop.GetComponent<SpriteRenderer>().sprite = null;
             }
             spriteRenderer.sprite = null;
 
@@ -189,15 +217,13 @@ public class Prop : MonoBehaviour
 
     public void FindAllMatches(){
 
-        Debug.Log("Entra a metodo FindAllMatches");
+        //Debug.Log("Entra a metodo FindAllMatches");
         if (spriteRenderer.sprite == null) return;
        
         bool hMatch = ClearMatch(new Vector2[2]{Vector2.left,Vector2.right});
         bool vMatch = ClearMatch(new Vector2[2]{Vector2.up,Vector2.down});
 
         if (hMatch || vMatch){
-
-            spriteRenderer.sprite = null;
             
             StopCoroutine(BoardManager.ShareInstance.FindNullProps());
             StartCoroutine(BoardManager.ShareInstance.FindNullProps());
