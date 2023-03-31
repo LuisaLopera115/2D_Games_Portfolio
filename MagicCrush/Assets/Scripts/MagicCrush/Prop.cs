@@ -12,13 +12,16 @@ public class Prop : MonoBehaviour
 
     public int id;
 
-    private Vector3 initialPosition1;
+    private Vector3 initialPosition1, tempPos;
     private Vector3 initialPosition2;
 
     [SerializeField] public int xPos, yPos;
     [SerializeField] public int xPosTarget, yPosTarget;
     private Vector2 firstTouchPosition, secondTouchPosition;
     private float swipeAngle;
+    public GameObject otherProp; 
+    private bool reverseSwipe = false;
+    public bool fall = false;
 
     private Vector2[] adjacentDirections= new Vector2[]{
         Vector2.up,
@@ -30,11 +33,12 @@ public class Prop : MonoBehaviour
 
     private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // track the position if the current prop and also init their targets
        xPosTarget = (int)transform.position.x;
-       yPosTarget = (int)transform.position.x;
+       yPosTarget = (int)transform.position.y;
        xPos=xPosTarget;
-       yPos=xPosTarget;
-        //objective = Vector3.zero;
+       yPos=yPosTarget;
     }
 
     private void Select(){
@@ -92,31 +96,89 @@ public class Prop : MonoBehaviour
         //Debug.Log("Unclick");
         secondTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         CalculateTheAngle();
+        SwapProps();
     }
     
     private void CalculateTheAngle(){
         swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
-        Debug.Log(swipeAngle);
+        //Debug.Log(swipeAngle);
     }
 
     private void Update()
     {
-        if (objective != Vector3.zero)
+        xPosTarget=xPos;
+        yPosTarget=yPos;
+    if(fall){
+
+        if(Mathf.Abs(xPosTarget - transform.position.x) > .1){
+            tempPos = new Vector2(xPosTarget, transform.position.y);
+            transform.position = Vector2.Lerp(transform.position,tempPos, .4f);
+        }else{
+            tempPos = new Vector2(xPosTarget, transform.position.y);
+            transform.position = tempPos;
+            BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
+
+        }
+
+        if(Mathf.Abs(yPosTarget - transform.position.y) > .1){
+            tempPos = new Vector2(transform.position.x, yPosTarget);
+            transform.position = Vector2.Lerp(transform.position,tempPos, .4f);
+        }else{
+            initialPosition1 = new Vector2(transform.position.x, yPosTarget);
+            transform.position = tempPos;
+            BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
+
+        }
+    }
+    }
+
+    private void SwapProps(){
+
+       // Debug.Log("SwapProps");
+
+        if (swipeAngle > -45 && swipeAngle <= 45 && xPos < (BoardManager.ShareInstance.xSize-1)) 
         {
-            this.transform.position = Vector3.Lerp(this.transform.position, objective, 5 * Time.deltaTime);
+            //swipe rigth
+            otherProp = BoardManager.ShareInstance.props[xPos + 1, yPos];
+            StartCoroutine(StartSwapPropsMovement(otherProp, 'x', true));
+        } 
+        else if ((swipeAngle > 135 || swipeAngle <= -135) && xPos > 0)  
+        {
+            //Debug.Log("swipe left");
+            //swipe left
+            otherProp = BoardManager.ShareInstance.props[xPos - 1, yPos];
+            StartCoroutine(StartSwapPropsMovement(otherProp, 'x', false));
+            
+        } 
+        else if(swipeAngle > 45 && swipeAngle < 135 && yPos < (BoardManager.ShareInstance.ySize-1)) 
+        {
+            //Debug.Log("swipe up");
+            //swipe up
+            otherProp = BoardManager.ShareInstance.props[xPos, yPos + 1];
+            //StartCoroutine(StartSwapPropsMovement(otherProp));
+            StartCoroutine(StartSwapPropsMovement(otherProp, 'y', true));
+                
+            
+        }
+        else if(swipeAngle < -45 && swipeAngle >= -135 && yPos > 0 )
+        {
+            //Debug.Log("swipe down");
+            //swipe down
+            otherProp = BoardManager.ShareInstance.props[xPos, yPos - 1];
+            //StartCoroutine(StartSwapPropsMovement(otherProp));
+            StartCoroutine(StartSwapPropsMovement(otherProp, 'y', false));
+                
+            
         }
     }
 
-    private IEnumerator SwapProps(Prop newProp){
-        /*
-        if (spriteRenderer.sprite == newProp.GetComponent<SpriteRenderer>().sprite)
-        {
-            yield return null;
-        }
+     private IEnumerator StartSwapPropsMovement(GameObject otherProp, char xy, bool plus){
+        
+        //Debug.Log("other pos: " + otherProp.transform.position + "sprite: " + otherProp.GetComponent<SpriteRenderer>().sprite );
 
-         float swapSpeed = 0.5f;
+        float swapSpeed = 0.5f;
 
-        initialPosition1 = newProp.GetComponent<Transform>().position;
+        initialPosition1 = otherProp.GetComponent<Transform>().position;
         initialPosition2 = this.transform.position;
 
         float t = 0.0f;
@@ -124,19 +186,56 @@ public class Prop : MonoBehaviour
         {
             t += Time.deltaTime/swapSpeed;
 
-            newProp.GetComponent<Transform>().position = Vector3.Lerp(initialPosition1, initialPosition2, t);
+            otherProp.GetComponent<Transform>().position = Vector3.Lerp(initialPosition1, initialPosition2, t);
             this.transform.position = Vector3.Lerp(initialPosition2, initialPosition1, t);
+            
             yield return null;
-        }*/
+        }
 
+        //Debug.Log("Swipe 1");
 
-        
-        FindAllMatches();
-        previusSelected.FindAllMatches();
-        previusSelected.Deselect();
+        if(!FindAllMatches() &&  !otherProp.GetComponent<Prop>().FindAllMatches() ){
+            Debug.Log("funciona");
+
+            reverseSwipe = true;
+            t = 0.0f;
+            while (t < 1.0f)
+            {
+                t += Time.deltaTime/swapSpeed;
+
+                otherProp.GetComponent<Transform>().position = Vector3.Lerp(initialPosition2, initialPosition1, t);
+                this.transform.position = Vector3.Lerp(initialPosition1, initialPosition2, t);
+                
+                yield return null;
+            }
+            BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
+            BoardManager.ShareInstance.props[otherProp.GetComponent<Prop>().xPos ,otherProp.GetComponent<Prop>().yPos] = otherProp.gameObject;
+        } else
+        {
+            if (xy == 'x' && plus){
+                otherProp.GetComponent<Prop>().xPos --;
+                xPos +=1;
+            }else if (xy == 'x' && !plus){
+                otherProp.GetComponent<Prop>().xPos ++;
+                xPos -=1;
+            }else if (xy == 'y' && plus){
+//                Debug.Log("up");
+                otherProp.GetComponent<Prop>().yPos --;
+                yPos +=1;
+            }else if(xy == 'y' && !plus){
+          //      Debug.Log("down");
+                otherProp.GetComponent<Prop>().yPos ++;
+                yPos -=1;
+            }
+
+            BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
+            BoardManager.ShareInstance.props[otherProp.GetComponent<Prop>().xPos ,otherProp.GetComponent<Prop>().yPos] = otherProp.gameObject;
+
+            StopCoroutine(BoardManager.ShareInstance.FindNullProps());
+            StartCoroutine(BoardManager.ShareInstance.FindNullProps());
+        }
         GUIManager.sharedInstance.MoveCounter--;
-        
-    }
+     }
 
 
     private GameObject GetNeightbor( Vector2 direction){
@@ -172,11 +271,6 @@ public class Prop : MonoBehaviour
         List<GameObject> findMatchingProps = new List<GameObject>();
 
         RaycastHit2D hit = Physics2D.Raycast(this.transform.position,direction);
-        // //Debug.Log("Hit: " + hit.collider);
-        // //Debug.Log("Hit Sprite: " + hit.collider.GetComponent<SpriteRenderer>().sprite);
-
-
-//        Debug.Log(spriteRenderer.sprite + " --> " + hit.collider.GetComponent<SpriteRenderer>().sprite );
 
 
         while(hit.collider != null && 
@@ -215,18 +309,20 @@ public class Prop : MonoBehaviour
         }
     }
 
-    public void FindAllMatches(){
+    public bool FindAllMatches(){
 
         //Debug.Log("Entra a metodo FindAllMatches");
-        if (spriteRenderer.sprite == null) return;
+        if (spriteRenderer.sprite == null) return false;
        
         bool hMatch = ClearMatch(new Vector2[2]{Vector2.left,Vector2.right});
         bool vMatch = ClearMatch(new Vector2[2]{Vector2.up,Vector2.down});
 
         if (hMatch || vMatch){
+
+            return true;
             
-            StopCoroutine(BoardManager.ShareInstance.FindNullProps());
-            StartCoroutine(BoardManager.ShareInstance.FindNullProps());
-        } 
+        } else {
+            return false;
+        }
     }
 }
