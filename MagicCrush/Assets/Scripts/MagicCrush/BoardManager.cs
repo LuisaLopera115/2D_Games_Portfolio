@@ -81,24 +81,88 @@ public class BoardManager : MonoBehaviour
         {
             for(int y = 0; y < ySize; y++)
             {
-                if(props[x,y].GetComponent<SpriteRenderer>().sprite == null)
+                if(props[x,y] == null)
                 {
-                    Debug.Log("null in X: " + x + "Y: " + y);
+//                    Debug.Log("null in X: " + x + "Y: " + y);
                     Destroy(props[x,y]);
                     props[x,y] = null;
                     nullPropsCant ++;
                     //yield return StartCoroutine(MakePropsFall(x, y));
                 }else if (nullPropsCant > 0){
-                    props[x,y].GetComponent<Prop>().fall= true;
                     props[x,y].GetComponent<Prop>().yPos -= nullPropsCant;
+                    props[x,y].GetComponent<Prop>().Resetprevius();
+                    props[x,y] = null; // este no lo entendi bien
+                    
                 }
             }
-            Debug.Log(nullPropsCant);
-            nullPropsCant =0; 
+            nullPropsCant = 0; 
         }
-
+       StartCoroutine(FillandMatch());
         yield return new WaitForSeconds(.4f);
+    }
 
+    private IEnumerator RefillBoard(){
+        Debug.Log("refill");
+        int idx = -1;
+        for(int x = 0; x < xSize; x++)
+        {
+            for(int y = 0; y < ySize; y++)
+            {
+                if(props[x,y] == null)
+                {
+//                    Debug.Log("null in X: " + x + "Y: " + y);
+                    Vector2 tempPos = new Vector2 (x,y);
+                    GameObject newProp = Instantiate(currentProp,tempPos,Quaternion.identity);
+                    newProp.name = string.Format("Prop[{0}][{1}]", x,y);
+                    do
+                {
+                    idx = Random.Range(0,prefabs.Count);
+                } while ((x>0 && idx == props[x-1,y].GetComponent<Prop>().id) ||
+                        (y>0 && idx == props[x,y-1].GetComponent<Prop>().id) );
+
+
+                    Sprite sprite = prefabs[idx];
+                    newProp.GetComponent<SpriteRenderer>().sprite = sprite;
+                    newProp.GetComponent<Prop>().id= idx;
+                    
+                    newProp.transform.parent = this.transform;
+
+                    props[x,y] = newProp;
+                }
+            }
+        }
+        yield return new WaitForSeconds(.4f);
+    }
+
+    private bool MatchesOnBoard(){
+        for(int x = 0; x < xSize; x++)
+        {
+            for(int y = 0; y < ySize; y++)
+            {
+                if(props[x,y] != null){
+                    if (props[x,y].GetComponent<Prop>().FindAllMatches()){
+                        Debug.Log("there is a match");
+                        
+                        return true;
+                    } 
+                }
+            }
+        }
+         return false;
+    }
+
+    private IEnumerator FillandMatch(){
+        yield return new WaitForSeconds(.4f);
+        Debug.Log("fill and Match");
+        StartCoroutine(RefillBoard());
+        yield return new WaitForSeconds(.4f);
+        while (MatchesOnBoard())
+        {
+            yield return new WaitForSeconds(.8f);
+            StopCoroutine(FindNullProps());
+            StartCoroutine(FindNullProps());
+        }
+        
     }
 
     void DestroyAll(string tag)
