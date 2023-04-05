@@ -21,7 +21,7 @@ public class Prop : MonoBehaviour
     private float swipeAngle;
     public GameObject otherProp; 
     
-    private int previusX , previusY;
+    public int previusX , previusY;
 
     private Vector2[] adjacentDirections= new Vector2[]{
         Vector2.up,
@@ -35,12 +35,13 @@ public class Prop : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         // track the position if the current prop and also init their targets
+        /*
        xPosTarget = (int)transform.position.x;
        yPosTarget = (int)transform.position.y;
        xPos=xPosTarget;
        yPos=yPosTarget;
        previusX = xPos;
-       previusY = yPos;
+       previusY = yPos;*/
     }
 
     private void Select(){
@@ -123,6 +124,7 @@ public class Prop : MonoBehaviour
         {
             //swipe rigth
             otherProp = BoardManager.ShareInstance.props[xPos + 1, yPos];
+            //Resetprevius();
             otherProp.GetComponent<Prop>().xPos --;
             xPos +=1;
         } 
@@ -131,6 +133,7 @@ public class Prop : MonoBehaviour
             Debug.Log("swipe left");
             //swipe left
             otherProp = BoardManager.ShareInstance.props[xPos - 1, yPos];
+            //Resetprevius();
             otherProp.GetComponent<Prop>().xPos ++;
             xPos -=1;
             
@@ -140,6 +143,7 @@ public class Prop : MonoBehaviour
             Debug.Log("swipe up");
             //swipe up
             otherProp = BoardManager.ShareInstance.props[xPos, yPos + 1];
+            //Resetprevius();
             otherProp.GetComponent<Prop>().yPos --;
             yPos +=1; 
             
@@ -149,6 +153,7 @@ public class Prop : MonoBehaviour
             Debug.Log("swipe down");
             //swipe down
             otherProp = BoardManager.ShareInstance.props[xPos, yPos - 1];
+            //Resetprevius();
             otherProp.GetComponent<Prop>().yPos ++;
             yPos -=1;
         }

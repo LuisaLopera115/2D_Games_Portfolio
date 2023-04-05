@@ -18,10 +18,13 @@ public class BoardManager : MonoBehaviour
     private Vector3 initialPosition1;
     private Vector3 initialPosition2;
 
+    public int offset;
+
     public bool isShifting{get; set;} // esto quiere decir que 
     //puede asignar un valor o evaluar un valor pero solo desde la clase.
     void Start()
     {
+        offset = 3;
         if(ShareInstance == null){
             ShareInstance = this;
         }
@@ -31,7 +34,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void CreateInitBoard(Vector2 offset){
+    public void CreateInitBoard(){
 
 //        Debug.Log("Init Pos " + gameObject.transform.position);
         
@@ -48,10 +51,12 @@ public class BoardManager : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                Vector2 tempPosition = new Vector2(x,y);
+                Vector2 tempPosition = new Vector2(x,  y + offset );
                 GameObject newProp = Instantiate(currentProp,tempPosition,Quaternion.identity);
                 newProp.name = string.Format("Prop[{0}][{1}]", x,y);
-                
+                newProp.GetComponent<Prop>().xPos = x;
+                newProp.GetComponent<Prop>().yPos= y;
+                newProp.GetComponent<Prop>().Resetprevius();
                 do
                 {
                     idx = Random.Range(0,prefabs.Count);
@@ -111,11 +116,15 @@ public class BoardManager : MonoBehaviour
                 if(props[x,y] == null)
                 {
 //                    Debug.Log("null in X: " + x + "Y: " + y);
-                    Vector2 tempPos = new Vector2 (x,y);
+                    Vector2 tempPos = new Vector2 (x,y + offset);
                     GameObject newProp = Instantiate(currentProp,tempPos,Quaternion.identity);
                     newProp.name = string.Format("Prop[{0}][{1}]", x,y);
-                    do
-                {
+                    newProp.GetComponent<Prop>().xPos = x;
+                    newProp.GetComponent<Prop>().yPos= y;
+                    newProp.GetComponent<Prop>().Resetprevius();
+
+
+                do{
                     idx = Random.Range(0,prefabs.Count);
                 } while ((x>0 && idx == props[x-1,y].GetComponent<Prop>().id) ||
                         (y>0 && idx == props[x,y-1].GetComponent<Prop>().id) );
