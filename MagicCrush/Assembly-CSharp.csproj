@@ -36,7 +36,9 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\AdsInitializer.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\Prop.cs" />
+     <Compile Include="Assets\Scripts\BannerAd.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\BoardManager.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\GUIManager.cs" />
      <Compile Include="Assets\Scripts\GamesScenesManager.cs" />
@@ -629,6 +631,9 @@
     <Reference Include="Unity.TextMeshPro">
         <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Advertisements">
+        <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\UnityEngine.Advertisements.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.2D.IK.Editor">
         <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\Unity.2D.IK.Editor.dll</HintPath>
     </Reference>
@@ -686,14 +691,11 @@
     <Reference Include="Unity.2D.Common.Editor">
         <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\Unity.2D.Common.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Runtime">
-        <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-        <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Advertisements.Editor">
         <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\UnityEngine.Advertisements.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.SpriteShape.Runtime">
+        <HintPath>C:\Users\Trabajo\Documents\Luisa_Git\2D_Games_Portfolio\MagicCrush\Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
