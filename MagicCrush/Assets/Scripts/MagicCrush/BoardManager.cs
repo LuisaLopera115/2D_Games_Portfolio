@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum GmaeStates
+{
+    wait, 
+    move
+} 
+
 public class BoardManager : MonoBehaviour
 {
+    public GmaeStates currentState = GmaeStates.move;
     public static BoardManager ShareInstance;
     public List<Sprite> prefabs = new List<Sprite>();
     public GameObject currentProp;
@@ -81,7 +88,7 @@ public class BoardManager : MonoBehaviour
     public IEnumerator FindNullProps()
     {
         int nullPropsCant = 0;
-        Debug.Log("FindNullProps");
+//        Debug.Log("FindNullProps");
         for(int x = 0; x < xSize; x++)
         {
             for(int y = 0; y < ySize; y++)
@@ -107,7 +114,7 @@ public class BoardManager : MonoBehaviour
     }
 
     private IEnumerator RefillBoard(){
-        Debug.Log("refill");
+//        Debug.Log("refill");
         int idx = -1;
         for(int x = 0; x < xSize; x++)
         {
@@ -162,16 +169,17 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator FillandMatch(){
         yield return new WaitForSeconds(.4f);
-        Debug.Log("fill and Match");
+//        Debug.Log("fill and Match");
         StartCoroutine(RefillBoard());
         yield return new WaitForSeconds(.4f);
         while (MatchesOnBoard())
         {
-            yield return new WaitForSeconds(.8f);
+            yield return new WaitForSeconds(.5f);
             StopCoroutine(FindNullProps());
             StartCoroutine(FindNullProps());
         }
-        
+        yield return new WaitForSeconds(.5f);
+        currentState = GmaeStates.move;
     }
 
     void DestroyAll(string tag)

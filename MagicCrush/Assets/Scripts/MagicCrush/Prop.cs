@@ -19,6 +19,7 @@ public class Prop : MonoBehaviour
     [SerializeField] public int xPosTarget, yPosTarget;
     private Vector2 firstTouchPosition, secondTouchPosition;
     private float swipeAngle;
+    private float swipeLimit = 1f;
     public GameObject otherProp; 
     
     public int previusX , previusY;
@@ -33,15 +34,6 @@ public class Prop : MonoBehaviour
 
     private void Start() {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // track the position if the current prop and also init their targets
-        /*
-       xPosTarget = (int)transform.position.x;
-       yPosTarget = (int)transform.position.y;
-       xPos=xPosTarget;
-       yPos=yPosTarget;
-       previusX = xPos;
-       previusY = yPos;*/
     }
 
     private void Select(){
@@ -58,21 +50,21 @@ public class Prop : MonoBehaviour
     }
 
     private void OnMouseDown() {
-
-        firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
+        if (BoardManager.ShareInstance.currentState == GmaeStates.move) firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
      private void OnMouseUp() {
         //Debug.Log("Unclick");
         secondTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         CalculateTheAngle();
-        SwapProps();
     }
     
     private void CalculateTheAngle(){
-        swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
-        //Debug.Log(swipeAngle);
+        if (Mathf.Abs(firstTouchPosition.y-secondTouchPosition.y) > swipeLimit )
+        {
+            swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
+            SwapProps();
+        }
     }
 
     private void Update()
@@ -102,19 +94,12 @@ public class Prop : MonoBehaviour
             if (BoardManager.ShareInstance.props[xPos,yPos] != this.gameObject)
             {
                  BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
-                 //Debug.Log("se repposicionan los props"); 
             }
-            
         }else{
             tempPos = new Vector2(transform.position.x, yPosTarget);
             transform.position = tempPos;
-
-            //BoardManager.ShareInstance.props[xPos,yPos].transform.position = this.transform.position;
-            
         }
-        
     }
-    
 
     private void SwapProps(){
 
@@ -124,36 +109,36 @@ public class Prop : MonoBehaviour
         {
             //swipe rigth
             otherProp = BoardManager.ShareInstance.props[xPos + 1, yPos];
-            //Resetprevius();
+            Resetprevius();
             otherProp.GetComponent<Prop>().xPos --;
             xPos +=1;
         } 
         else if ((swipeAngle > 135 || swipeAngle <= -135) && xPos > 0)  
         {
-            Debug.Log("swipe left");
+            //Debug.Log("swipe left");
             //swipe left
             otherProp = BoardManager.ShareInstance.props[xPos - 1, yPos];
-            //Resetprevius();
+            Resetprevius();
             otherProp.GetComponent<Prop>().xPos ++;
             xPos -=1;
             
         } 
         else if(swipeAngle > 45 && swipeAngle < 135 && yPos < (BoardManager.ShareInstance.ySize-1)) 
         {
-            Debug.Log("swipe up");
+            //Debug.Log("swipe up");
             //swipe up
             otherProp = BoardManager.ShareInstance.props[xPos, yPos + 1];
-            //Resetprevius();
+            Resetprevius();
             otherProp.GetComponent<Prop>().yPos --;
             yPos +=1; 
             
         }
         else if(swipeAngle < -45 && swipeAngle >= -135 && yPos > 0 )
         {
-            Debug.Log("swipe down");
+            //Debug.Log("swipe down");
             //swipe down
             otherProp = BoardManager.ShareInstance.props[xPos, yPos - 1];
-            //Resetprevius();
+            Resetprevius();
             otherProp.GetComponent<Prop>().yPos ++;
             yPos -=1;
         }
@@ -274,7 +259,7 @@ public class Prop : MonoBehaviour
     }
 
     public void Resetprevius() {
-        Debug.Log("reset previus");
+//        Debug.Log("reset previus");
         previusX = xPos;
         previusY = yPos;
     }
