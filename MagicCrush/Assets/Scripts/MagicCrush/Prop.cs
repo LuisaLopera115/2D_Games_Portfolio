@@ -54,16 +54,22 @@ public class Prop : MonoBehaviour
     }
 
      private void OnMouseUp() {
-        //Debug.Log("Unclick");
-        secondTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        CalculateTheAngle();
+        if (BoardManager.ShareInstance.currentState == GmaeStates.move) {
+            secondTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            CalculateTheAngle();
+        }
     }
     
     private void CalculateTheAngle(){
-        if (Mathf.Abs(firstTouchPosition.y-secondTouchPosition.y) > swipeLimit )
+        if (Mathf.Abs(firstTouchPosition.y-secondTouchPosition.y) > swipeLimit ||
+            Mathf.Abs(firstTouchPosition.x-secondTouchPosition.x) > swipeLimit)
         {
             swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
             SwapProps();
+            BoardManager.ShareInstance.currentState = GmaeStates.wait;
+        }else
+        {
+            BoardManager.ShareInstance.currentState = GmaeStates.move;
         }
     }
 
@@ -146,7 +152,11 @@ public class Prop : MonoBehaviour
     }
 
      private IEnumerator CheckMove(){
+
         Debug.Log("nomatch");
+
+        BombsManager.ShareInstance.FindMatches();
+
         yield return new WaitForSeconds(.4f);
         if (otherProp != null)
         {
@@ -156,6 +166,8 @@ public class Prop : MonoBehaviour
                 otherProp.GetComponent<Prop>().yPos = yPos;
                 xPos = previusX;
                 yPos = previusY;
+                yield return new WaitForSeconds(.4f);
+                BoardManager.ShareInstance.currentState = GmaeStates.move;
             }else {
                 Debug.Log("match");
                 StopCoroutine(BoardManager.ShareInstance.FindNullProps());
@@ -206,12 +218,11 @@ public class Prop : MonoBehaviour
             findMatchingProps.Add(hit.collider.gameObject);
             hit =  Physics2D.Raycast(hit.collider.transform.position,direction);
         }
-
-
         return findMatchingProps;
     }
 
     private bool ClearMatch(Vector2[] directions){
+        
 
         // //Debug.Log("Entra al metodo ClearMatch");
         List<GameObject> matchingProps = new List<GameObject>();
@@ -228,6 +239,9 @@ public class Prop : MonoBehaviour
             {
 //                Debug.Log(prop.GetComponent<SpriteRenderer>().sprite.name);
                 prop.GetComponent<SpriteRenderer>().sprite=null;
+                
+                BombsManager.ShareInstance.FindedMatcches.Remove(BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos]);
+                BombsManager.ShareInstance.FindedMatcches.Remove(BoardManager.ShareInstance.props[xPos, yPos] );
                 Destroy(BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos]);
                 BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos] = null;
             }
@@ -250,7 +264,7 @@ public class Prop : MonoBehaviour
         bool vMatch = ClearMatch(new Vector2[2]{Vector2.up,Vector2.down});
 
         if (hMatch || vMatch){
-
+            
             return true;
             
         } else {
