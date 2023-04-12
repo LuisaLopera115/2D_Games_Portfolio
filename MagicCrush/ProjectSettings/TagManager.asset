@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - prop
+  - Ingredient
+  - Cauldron
   layers:
   - Default
   - TransparentFX
