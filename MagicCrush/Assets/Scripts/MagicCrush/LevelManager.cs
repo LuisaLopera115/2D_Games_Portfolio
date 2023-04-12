@@ -56,7 +56,6 @@ public class LevelManager : MonoBehaviour
         else if (intLevel < 25){
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 12;
-            
             BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 30){

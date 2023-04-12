@@ -6,9 +6,11 @@ public class Prop : MonoBehaviour
 {
     private Color selectedColor = new Color(0f,0f,0f);
     public static Prop previusSelected = null;
-
+    
+    public ParticleSystem PropExplotion;
     private SpriteRenderer spriteRenderer;
     private bool isSelected = false;
+    public bool isMatch;
 
     public int id;
 
@@ -33,6 +35,7 @@ public class Prop : MonoBehaviour
 
 
     private void Start() {
+        isMatch = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -79,9 +82,9 @@ public class Prop : MonoBehaviour
         yPosTarget=yPos;
 
 
-        if(Mathf.Abs( this.transform.position.x - xPosTarget) > .1){
+        if(Mathf.Abs( this.transform.position.x - xPosTarget) > .01f){
             tempPos = new Vector2(xPosTarget, transform.position.y);
-            this.transform.position = Vector2.Lerp(this.transform.position,tempPos, .1f);
+            this.transform.position = Vector2.Lerp(this.transform.position,tempPos, .4f);
             if (BoardManager.ShareInstance.props[xPos,yPos] != this.gameObject)
             {
                  BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
@@ -94,9 +97,9 @@ public class Prop : MonoBehaviour
            
         }
 
-        if(Mathf.Abs(yPosTarget - transform.position.y) > .1){
+        if(Mathf.Abs(yPosTarget - transform.position.y) > .01){
             tempPos = new Vector2(transform.position.x, yPosTarget);
-            this.transform.position = Vector2.Lerp(this.transform.position,tempPos, .1f);
+            this.transform.position = Vector2.Lerp(this.transform.position,tempPos, .4f);
             if (BoardManager.ShareInstance.props[xPos,yPos] != this.gameObject)
             {
                  BoardManager.ShareInstance.props[xPos,yPos] = this.gameObject;
@@ -151,27 +154,24 @@ public class Prop : MonoBehaviour
         StartCoroutine(CheckMove());
     }
 
-     private IEnumerator CheckMove(){
+    private IEnumerator CheckMove(){
 
-        Debug.Log("nomatch");
-
-        BombsManager.ShareInstance.FindMatches();
-
+        BoardManager.ShareInstance.FindMatches();
         yield return new WaitForSeconds(.4f);
+
         if (otherProp != null)
         {
-            if (!FindAllMatches() &&  !otherProp.GetComponent<Prop>().FindAllMatches())
+            if (!BoardManager.ShareInstance.FindMatches())
             {
                 otherProp.GetComponent<Prop>().xPos = xPos;
                 otherProp.GetComponent<Prop>().yPos = yPos;
                 xPos = previusX;
                 yPos = previusY;
-                yield return new WaitForSeconds(.4f);
+                Debug.Log("nomatch");
+                yield return new WaitForSeconds(.2f);
                 BoardManager.ShareInstance.currentState = GmaeStates.move;
             }else {
                 Debug.Log("match");
-                StopCoroutine(BoardManager.ShareInstance.FindNullProps());
-                StartCoroutine(BoardManager.ShareInstance.FindNullProps());
             }
             otherProp = null;   
         }
@@ -185,7 +185,6 @@ public class Prop : MonoBehaviour
              return hit.collider.gameObject;
         }else{
             return null;}
-        
     }
 
     private List<GameObject> GetAllNeighbors(){
@@ -200,80 +199,7 @@ public class Prop : MonoBehaviour
         return neighbors;
     }
 
-    private bool CanSwipe(){
-
-        return GetAllNeighbors().Contains(previusSelected.gameObject);
-    }
-    
-     private List<GameObject> FindMatch(Vector2 direction){
-
-        // Debug.Log("entra al Metodo FindMacth");
-        List<GameObject> findMatchingProps = new List<GameObject>();
-
-        RaycastHit2D hit = Physics2D.Raycast(this.transform.position,direction);
-
-
-        while(hit.collider != null && 
-        hit.collider.GetComponent<SpriteRenderer>().sprite == spriteRenderer.sprite){
-            findMatchingProps.Add(hit.collider.gameObject);
-            hit =  Physics2D.Raycast(hit.collider.transform.position,direction);
-        }
-        return findMatchingProps;
-    }
-
-    private bool ClearMatch(Vector2[] directions){
-        
-
-        // //Debug.Log("Entra al metodo ClearMatch");
-        List<GameObject> matchingProps = new List<GameObject>();
-
-        foreach(Vector2 direction in directions){
-            matchingProps.AddRange(FindMatch(direction));
-            // Debug.Log(directions.ToString());
-        }
-
-        if (matchingProps.Count >= BoardManager.MinPropstoMatch)
-        {
-            // //Debug.Log("hay match");
-            foreach (GameObject prop in matchingProps)
-            {
-//                Debug.Log(prop.GetComponent<SpriteRenderer>().sprite.name);
-                prop.GetComponent<SpriteRenderer>().sprite=null;
-                
-                BombsManager.ShareInstance.FindedMatcches.Remove(BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos]);
-                BombsManager.ShareInstance.FindedMatcches.Remove(BoardManager.ShareInstance.props[xPos, yPos] );
-                Destroy(BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos]);
-                BoardManager.ShareInstance.props[prop.GetComponent<Prop>().xPos, prop.GetComponent<Prop>().yPos] = null;
-            }
-            Destroy(BoardManager.ShareInstance.props[xPos, yPos] );
-            BoardManager.ShareInstance.props[xPos, yPos] = null;
-
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public bool FindAllMatches(){
-
-       
-        //Debug.Log("Entra a metodo FindAllMatches");
-        if (spriteRenderer.sprite == null) return false;
-       
-        bool hMatch = ClearMatch(new Vector2[2]{Vector2.left,Vector2.right});
-        bool vMatch = ClearMatch(new Vector2[2]{Vector2.up,Vector2.down});
-
-        if (hMatch || vMatch){
-            
-            return true;
-            
-        } else {
-            return false;
-        }
-    }
-
     public void Resetprevius() {
-//        Debug.Log("reset previus");
         previusX = xPos;
         previusY = yPos;
     }
