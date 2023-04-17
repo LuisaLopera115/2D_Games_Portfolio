@@ -9,7 +9,7 @@ Creation of potions with Match 3 for sale
 Several interesting mechanics that make it exciting
 
 # Highlighted Implementations
-Ads: This game includes advertising implementations at appropriate moments, which helps maintain the right balance between monetization and user experience.
+## Ads: This game includes advertising implementations at appropriate moments, which helps maintain the right balance between monetization and user experience.
 Scritable Objects for level creation: Scritable Objects are used for level creation, allowing developers to add new levels easily and quickly without having to change the main code.
 Creation of Sprite with artificial intelligence: The game uses a technique of creating Sprite with artificial intelligence that makes objects look more lively and attractive.
 Organized code usage: All the code is well-organized, making it easy to understand and modify.
