@@ -19,3 +19,5 @@ Several interesting mechanics that make it exciting
 
 ## Credits
 This game was created by **Luisa Lopera**  and is available on Google Play Store. If you have any suggestions or find any issues, don't hesitate to let us know. Thank you for playing our game!
+
+![Screen shot game](https://user-images.githubusercontent.com/77677153/232506629-a5247543-fa91-40b1-902d-11ce7b3107ae.PNG)
