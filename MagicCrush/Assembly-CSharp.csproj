@@ -37,16 +37,19 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\AdsInitializer.cs" />
+     <Compile Include="Assets\Scripts\MagicCrush\Scriptable Objects\World.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\Prop.cs" />
+     <Compile Include="Assets\Scripts\MagicCrush\CauldronManager.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\BombsManager.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\IngredientProp.cs" />
+     <Compile Include="Assets\Scripts\MagicCrush\Cauldron.cs" />
      <Compile Include="Assets\Scripts\BannerAd.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\BoardManager.cs" />
+     <Compile Include="Assets\Scripts\MagicCrush\Scriptable Objects\Level.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\GUIManager.cs" />
      <Compile Include="Assets\Scripts\GamesScenesManager.cs" />
      <Compile Include="Assets\Scripts\MagicCrush\LevelManager.cs" />
-     <Compile Include="Assets\Scripts\MagicCrush\Cauldron.cs" />
-     <Compile Include="Assets\Scripts\MagicCrush\CauldronManager.cs" />
+     <Compile Include="Assets\Scripts\ScreenTransform.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.30f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

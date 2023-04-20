@@ -7,6 +7,7 @@ public class GUIManager : MonoBehaviour
 {
     public Image scoraBar;
     public Text movesText, scoreText;
+    public Image panel;
     
     private int score;
 
@@ -123,16 +124,19 @@ public class GUIManager : MonoBehaviour
         {
             case "Game Over": 
                 gameOverPanel.SetActive(true);
+                panel.enabled = true;
             break;
 
             case "Game Win": 
                 winPanel.SetActive(true);
+                panel.enabled = true;
 
             break;
 
             case "Reset": 
                 winPanel.SetActive(false);
                 gameOverPanel.SetActive(false);
+                panel.enabled = false;
 
             break;
 
