@@ -4,9 +4,13 @@ ScriptsOnlyBuild:
     - AdsInitializer
     - BannerAd
     - BoardManager
+    - Cauldron
+    - CauldronManager
     - GUIManager
-    - LevelManager
+    - IngredientProp
+    - Level
     - Prop
+    - World
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
@@ -65,27 +69,35 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1656}
     - Class: 114
-      Script: {instanceID: 2206}
+      Script: {instanceID: 1748}
     - Class: 114
-      Script: {instanceID: 2324}
+      Script: {instanceID: 2208}
     - Class: 114
-      Script: {instanceID: 2772}
+      Script: {instanceID: 2326}
     - Class: 114
-      Script: {instanceID: 2952}
+      Script: {instanceID: 2774}
     - Class: 114
-      Script: {instanceID: 3206}
+      Script: {instanceID: 2870}
     - Class: 114
-      Script: {instanceID: 3458}
+      Script: {instanceID: 2956}
     - Class: 114
-      Script: {instanceID: 3590}
+      Script: {instanceID: 3114}
     - Class: 114
-      Script: {instanceID: 3970}
+      Script: {instanceID: 3214}
     - Class: 114
-      Script: {instanceID: 4018}
+      Script: {instanceID: 3466}
     - Class: 114
-      Script: {instanceID: 4682}
+      Script: {instanceID: 3598}
     - Class: 114
-      Script: {instanceID: 5998}
+      Script: {instanceID: 3782}
+    - Class: 114
+      Script: {instanceID: 3980}
+    - Class: 114
+      Script: {instanceID: 4028}
+    - Class: 114
+      Script: {instanceID: 4180}
+    - Class: 114
+      Script: {instanceID: 4694}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -93,6 +105,10 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
       Script: {instanceID: 0}
     - Class: 212
       Script: {instanceID: 0}
@@ -167,6 +183,12 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
+      Hash: dc82ad1fe8a068fdd6e2ff7b6e541820
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: World
+  - hash:
+      serializedVersion: 2
       Hash: 21a9c6dbf300fc1f6dc15ca7e2c39a37
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -191,7 +213,7 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
-      Hash: 77156e0b9ca9bf9dd416fa0e96f00515
+      Hash: 8c6ded64ae2a329ded6ebb5c3ef89e1b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Prop
@@ -251,6 +273,12 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
+      Hash: b8f20416ec5325e65be1d83f54595f64
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CauldronManager
+  - hash:
+      serializedVersion: 2
       Hash: cf9f5cf2c3145a37ac07f00e50e460f9
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -285,6 +313,18 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextMeshProUGUI
+  - hash:
+      serializedVersion: 2
+      Hash: 8144eb0007729b68a3f2d34e77d295a9
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BombsManager
+  - hash:
+      serializedVersion: 2
+      Hash: 4a433899971bff1a9d203d6fc1165fbc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: IngredientProp
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -389,6 +429,12 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
+      Hash: 6017398bcc9a2ca08151cd0afc3f8301
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Cauldron
+  - hash:
+      serializedVersion: 2
       Hash: 8aa3d6ccbcb54ee8db6c1229854adaaa
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -419,7 +465,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: d36cd606cced1f0bd4387347cde0ba03
+      Hash: 43ddef681a8f811e59e11be0d3ba6c39
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BoardManager
@@ -447,6 +493,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.Advertisements.dll
     namespaceName: UnityEngine.Advertisements.Platform.Editor
     className: BannerPlaceholder
+  - hash:
+      serializedVersion: 2
+      Hash: 555b07e1c196ccab662237168f07e9e9
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Level
   - hash:
       serializedVersion: 2
       Hash: 18c222bef9ae745ce69ddde9b74337ca
@@ -527,7 +579,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: afd99bfcb48e71908f6b8e763565f334
+      Hash: 23872d3afe60a2bfcadba838b2c53908
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GUIManager
@@ -684,4 +736,4 @@ ScriptsOnlyBuild:
   platform: 13
   scenePathNames:
   - Assets/Scenes/MagicCrush.unity
-  playerPath: C:/Users/Trabajo/Documents/Luisa_Git/2D_Games_Portfolio/MagicCrush/MagicCrush.aab
+  playerPath: C:/Users/Trabajo/Documents/Luisa_Git/2D_Games_Portfolio/Versiones/1.2.0.aab

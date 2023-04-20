@@ -126,6 +126,7 @@ MonoBehaviour:
   id: 0
   circle: {fileID: 1759075136091704488}
   completed: 0
+  cauldronIngredient: 0
 --- !u!1 &7597144918071508910
 GameObject:
   m_ObjectHideFlags: 0
