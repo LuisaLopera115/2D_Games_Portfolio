@@ -11,10 +11,16 @@ public enum GmaeStates
 
 public class BoardManager : MonoBehaviour
 {
+    public ScreenTransform ScreenTransform;
+
+    public World world;
+
+    public int currentLevel = 0;
+
     public GmaeStates currentState = GmaeStates.move;
     
     public static BoardManager ShareInstance;
-    public List<Sprite> prefabs = new List<Sprite>();
+    public Sprite[] prefabs;
     public GameObject currentProp;
     public List<GameObject> FindedMatcches = new List<GameObject>();
     public GameObject PropExplotion;
@@ -23,6 +29,8 @@ public class BoardManager : MonoBehaviour
     public int xSize,ySize;
 
     public GameObject[,] props; 
+
+    public int[] scoreGoals = new int[3];
 
     public const int MinPropstoMatch = 2;
 
@@ -33,10 +41,18 @@ public class BoardManager : MonoBehaviour
 
     public int offset;
 
+    public Sprite[] ingredienstSprites;
+    public int moveCounter;
     
+    public int strikeValue = 5; // when you have an extra match while falling props you get extra bonus 
 
     public bool isShifting{get; set;} // esto quiere decir que 
     //puede asignar un valor o evaluar un valor pero solo desde la clase.
+
+    private void Awake() {
+       PutLevelInfo();
+    }
+
     void Start()
     {
         MatchId = -1;
@@ -48,17 +64,18 @@ public class BoardManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        CreateInitBoard();
+
+        ScreenTransform = FindObjectOfType<ScreenTransform>();
     }
 
     public void CreateInitBoard(){
 
-//        Debug.Log("Init Pos " + gameObject.transform.position);
-        
-//        Debug.Log("SE RESETEA TODO EL JUEGO");
         DestroyAll("prop");
 
-        CauldronManager.ShareInstance.InitIngredients();
-
+        CauldronManager.ShareInstance.InitCauldron();
+        
         props = new GameObject[xSize, ySize];
         float startX = this.transform.position.x;
         float startY = this.transform.position.y;
@@ -75,7 +92,7 @@ public class BoardManager : MonoBehaviour
                 newProp.GetComponent<Prop>().Resetprevius();
                 do
                 {
-                    idx = Random.Range(0,prefabs.Count);
+                    idx = Random.Range(0,prefabs.Length);
                 } while ((x>0 && idx == props[x-1,y].GetComponent<Prop>().id) ||
                         (y>0 && idx == props[x,y-1].GetComponent<Prop>().id) );
 
@@ -92,8 +109,6 @@ public class BoardManager : MonoBehaviour
 
 //       Debug.Log("Final Pos " + gameObject.transform.position);
     } 
-
-
 
     public bool FindMatches(){
         for (int x = 0; x < BoardManager.ShareInstance.xSize; x++)
@@ -119,7 +134,7 @@ public class BoardManager : MonoBehaviour
                                 rightProp.GetComponent<Prop>().isMatch= true;
                                 matchAterreilling = true;
                                 MatchId = currentProp.GetComponent<Prop>().id;
-                                Debug.Log("id " +  MatchId);
+//                                Debug.Log("id " +  MatchId);
                             }
                         }
                     }
@@ -139,7 +154,7 @@ public class BoardManager : MonoBehaviour
                                 downProp.GetComponent<Prop>().isMatch= true;
                                 matchAterreilling = true;
                                 MatchId = currentProp.GetComponent<Prop>().id;
-                                Debug.Log("id " +  MatchId);
+//                                Debug.Log("id " +  MatchId);
                             }
                         }
                     }
@@ -152,9 +167,11 @@ public class BoardManager : MonoBehaviour
         if (matchAterreilling)
         {
             matchAterreilling = false;
+            GUIManager.sharedInstance.Score += 30;
+            GUIManager.sharedInstance.MoveCounter --;
             CauldronManager.ShareInstance.CompareIngredientsWhitMatch();
             StartCoroutine(NullMatches());
-            Debug.Log("FindMatchesCo");
+            //Debug.Log("FindMatchesCo");
             return true;
         }else{
             return false;
@@ -163,7 +180,7 @@ public class BoardManager : MonoBehaviour
 
     public IEnumerator NullMatches(){
 
-        Debug.Log("NullMatches");
+        //Debug.Log("NullMatches");
 
         for (int x = 0; x < BoardManager.ShareInstance.xSize; x++)
         {
@@ -186,12 +203,11 @@ public class BoardManager : MonoBehaviour
         StartCoroutine(BoardManager.ShareInstance.FindNullProps());
     }
 
-
     public IEnumerator FindNullProps()
     {   
         yield return new WaitForSeconds(.2f);
         int nullPropsCant = 0;
-         Debug.Log("FindNullProps");
+//         Debug.Log("FindNullProps");
         for(int x = 0; x < xSize; x++)
         {
             for(int y = 0; y < ySize; y++)
@@ -219,7 +235,6 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator RefillBoard(){
 
-        
 //        Debug.Log("refill");
         int idx = -1;
         for(int x = 0; x < xSize; x++)
@@ -228,7 +243,7 @@ public class BoardManager : MonoBehaviour
             {
                 if(props[x,y] == null)
                 {
-//                    Debug.Log("null in X: " + x + "Y: " + y);
+//                  Debug.Log("null in X: " + x + "Y: " + y);
                     Vector2 tempPos = new Vector2 (x,y + offset);
                     GameObject newProp = Instantiate(currentProp,tempPos,Quaternion.identity);
                     newProp.name = string.Format("Prop[{0}][{1}]", x,y);
@@ -238,7 +253,7 @@ public class BoardManager : MonoBehaviour
 
 
                 do{
-                    idx = Random.Range(0,prefabs.Count);
+                    idx = Random.Range(0,prefabs.Length);
                 } while ((x>0 && idx == props[x-1,y].GetComponent<Prop>().id) ||
                         (y>0 && idx == props[x,y-1].GetComponent<Prop>().id) );
 
@@ -267,7 +282,7 @@ public class BoardManager : MonoBehaviour
 
     private IEnumerator FillandMatch(){
 
-        Debug.Log("FillandMatch");
+       // Debug.Log("FillandMatch");
 
         yield return new WaitForSeconds(.4f);
 //        Debug.Log("fill and Match");
@@ -276,9 +291,15 @@ public class BoardManager : MonoBehaviour
         yield return new WaitForSeconds(.4f);
         while (MatchesOnBoard())
         {
-            Debug.Log("MatchesOnBoard()");
+           // Debug.Log("MatchesOnBoard()");
+            GUIManager.sharedInstance.Score += 20;
             yield return new WaitForSeconds(.4f);
         }
+/*
+        if (IsDeadLock())
+        {
+            Debug.Log("DEAD");
+        }*/
         yield return new WaitForSeconds(.5f);
         currentState = GmaeStates.move;
     }
@@ -293,7 +314,111 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-     
+    public void PutLevelInfo(){
+
+         if (world != null)
+        {
+            if(world.levels[currentLevel] != null){
+
+                xSize = world.levels[currentLevel].xSice;
+                ySize = world.levels[currentLevel].ySice;
+
+                prefabs = world.levels[currentLevel].propsSprites;
+
+                moveCounter = world.levels[currentLevel].moves;
+                
+                scoreGoals = world.levels[currentLevel].scoreGoals;
+
+                ingredienstSprites = world.levels[currentLevel].ingredienstSprites;
+
+                if (ScreenTransform != null)
+                {
+                    ScreenTransform.RePositionCamera(BoardManager.ShareInstance.xSize - 1,BoardManager.ShareInstance.ySize - 1);
+                }
+            }
+        }
+    }
+
+    private void SwitchProps(int row, int column, Vector2 direction){
+        // here board is gonna change position to check if theres is matche if not its a deadlock
+        GameObject holder = props[row + (int) direction.x, row + (int) direction.y];
+        props[row + (int) direction.x, row + (int) direction.y] = props[row,column];
+        props[row,column] = holder;
+    }
+
+    private bool checkForMatch(){
+
+        for (int i = 0; i < xSize; i++)
+        {
+            for (int j = 0; j < ySize; j++)
+            {
+                if (props[i,j] != null)
+                {
+                    if (i < xSize - 2)
+                    {
+                        if (props[i + 1, j].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id &&
+                            props[i + 2, j].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id)
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    if (j < ySize - 2)
+                    {
+                        if (props[i, j + 1].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id &&
+                        props[i, j + 2].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id)
+                        {
+                            return true;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool SwitchAndCheck(int column, int row, Vector2 derection){
+
+        SwitchProps(column,row,derection);
+        if (checkForMatch())
+        {
+            SwitchProps(column,row,derection);
+            return true;
+        }
+        SwitchProps(column,row,derection);
+            return false;
+        
+    }
+
+    private bool IsDeadLock(){
+
+    for (int i = 0; i < xSize; i++)
+    {
+        for (int j = 0; j < ySize; j++)
+        {
+            if (props[i,j] != null)
+            {
+                if (i < xSize - 1)
+                {
+                    if (SwitchAndCheck(i,j,Vector2.right))
+                    {
+                        return false;
+                    }
+                }
+                if (j < ySize - 1)
+                {
+                    if (SwitchAndCheck(i,j,Vector2.up))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
 }
 
 

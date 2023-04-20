@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour
 {
+    public Image scoraBar;
     public Text movesText, scoreText;
-    private int moveCounter;
+    
     private int score;
 
     public GameObject winPanel, gameOverPanel;
+
 
     public int Score
     {
@@ -23,15 +25,16 @@ public class GUIManager : MonoBehaviour
 
     public int MoveCounter
     {
-        get { return moveCounter; }
+        get { return BoardManager.ShareInstance.moveCounter; }
         set
         {
-            moveCounter = value;
-            movesText.text = "MOVES: " + moveCounter;
+            BoardManager.ShareInstance.moveCounter = value;
+            movesText.text = "MOVES: " + BoardManager.ShareInstance.moveCounter;
 
-            if (moveCounter == 0)
+            if (BoardManager.ShareInstance.moveCounter == 0)
             {
-                if(Score > 100){
+                if(Score > BoardManager.ShareInstance.scoreGoals[BoardManager.ShareInstance.scoreGoals.Length - 1]){
+                    BoardManager.ShareInstance.currentLevel ++;
                     StartCoroutine(WinGame());
                 }else{
                     StartCoroutine(GameOver());
@@ -41,7 +44,6 @@ public class GUIManager : MonoBehaviour
             }
         }
     }
-
     public static GUIManager sharedInstance;
     // Start is called before the first frame update
     void Start()
@@ -57,10 +59,28 @@ public class GUIManager : MonoBehaviour
         }
 
         score = 0;
-        moveCounter = 5;
-        movesText.text = "MOVES: " + moveCounter;
-        scoreText.text = "SCORE: " + score;
+        if (BoardManager.ShareInstance != null)
+        {
+            movesText.text = "MOVES: " + BoardManager.ShareInstance.moveCounter;
+            scoreText.text = "SCORE: " + score;
+        }
+        
     }
+
+    private void Update() {
+        UpdateBar();
+    }
+
+    private void UpdateBar(){
+
+        if (scoraBar != null)
+        {
+            int length = BoardManager.ShareInstance.scoreGoals.Length - 1;
+            scoraBar.fillAmount = (float) score / (float) BoardManager.ShareInstance.scoreGoals[length];
+        }
+    }
+
+    // Panel Manager
 
     private IEnumerator GameOver(){
         
@@ -69,8 +89,8 @@ public class GUIManager : MonoBehaviour
         Debug.Log("Game Over");
         PanelManager("Game Over");
         score = 0;
-        moveCounter = 5;
-        movesText.text = "MOVES: " + moveCounter;
+        //BoardManager.ShareInstance.moveCounter = 5;
+        movesText.text = "MOVES: " + BoardManager.ShareInstance.moveCounter;
         scoreText.text = "SCORE: " + score;
         // game over panel
     }
@@ -81,8 +101,7 @@ public class GUIManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         Debug.Log("Win Game");
         score = 0;
-        moveCounter = 5;
-        movesText.text = "MOVES: " + moveCounter;
+        movesText.text = "MOVES: " + BoardManager.ShareInstance.moveCounter;
         scoreText.text = "SCORE: " + score;
 
         // game win panel

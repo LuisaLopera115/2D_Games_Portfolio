@@ -67,9 +67,10 @@ public class Prop : MonoBehaviour
         if (Mathf.Abs(firstTouchPosition.y-secondTouchPosition.y) > swipeLimit ||
             Mathf.Abs(firstTouchPosition.x-secondTouchPosition.x) > swipeLimit)
         {
+            BoardManager.ShareInstance.currentState = GmaeStates.wait;
             swipeAngle = Mathf.Atan2(secondTouchPosition.y - firstTouchPosition.y,  secondTouchPosition.x - firstTouchPosition.x) * Mathf.Rad2Deg;
             SwapProps();
-            BoardManager.ShareInstance.currentState = GmaeStates.wait;
+            
         }else
         {
             BoardManager.ShareInstance.currentState = GmaeStates.move;
@@ -110,48 +111,43 @@ public class Prop : MonoBehaviour
         }
     }
 
+    private void Swap(Vector2 direction){
+
+            otherProp = BoardManager.ShareInstance.props[xPos + (int)direction.x, yPos + (int)direction.y];
+            Resetprevius();
+            otherProp.GetComponent<Prop>().xPos += -1 * (int)direction.x;
+            otherProp.GetComponent<Prop>().yPos += -1 * (int)direction.y;
+            xPos += (int)direction.x;
+            yPos += (int)direction.y;
+            StartCoroutine(CheckMove());
+    }
+
     private void SwapProps(){
 
        // Debug.Log("SwapProps");
 
         if (swipeAngle > -45 && swipeAngle <= 45 && xPos < (BoardManager.ShareInstance.xSize-1)) 
         {
-            //swipe rigth
-            otherProp = BoardManager.ShareInstance.props[xPos + 1, yPos];
-            Resetprevius();
-            otherProp.GetComponent<Prop>().xPos --;
-            xPos +=1;
+            //swipe rigth 
+            Swap(Vector2.right);
         } 
         else if ((swipeAngle > 135 || swipeAngle <= -135) && xPos > 0)  
         {
-            //Debug.Log("swipe left");
             //swipe left
-            otherProp = BoardManager.ShareInstance.props[xPos - 1, yPos];
-            Resetprevius();
-            otherProp.GetComponent<Prop>().xPos ++;
-            xPos -=1;
-            
+            Swap(Vector2.left);
         } 
         else if(swipeAngle > 45 && swipeAngle < 135 && yPos < (BoardManager.ShareInstance.ySize-1)) 
         {
-            //Debug.Log("swipe up");
             //swipe up
-            otherProp = BoardManager.ShareInstance.props[xPos, yPos + 1];
-            Resetprevius();
-            otherProp.GetComponent<Prop>().yPos --;
-            yPos +=1; 
-            
+            Swap(Vector2.up);
         }
         else if(swipeAngle < -45 && swipeAngle >= -135 && yPos > 0 )
         {
-            //Debug.Log("swipe down");
             //swipe down
-            otherProp = BoardManager.ShareInstance.props[xPos, yPos - 1];
-            Resetprevius();
-            otherProp.GetComponent<Prop>().yPos ++;
-            yPos -=1;
+            Swap(Vector2.down);
         }
-        StartCoroutine(CheckMove());
+        BoardManager.ShareInstance.currentState = GmaeStates.move;
+
     }
 
     private IEnumerator CheckMove(){
@@ -167,11 +163,11 @@ public class Prop : MonoBehaviour
                 otherProp.GetComponent<Prop>().yPos = yPos;
                 xPos = previusX;
                 yPos = previusY;
-                Debug.Log("nomatch");
+               // Debug.Log("nomatch");
                 yield return new WaitForSeconds(.2f);
                 BoardManager.ShareInstance.currentState = GmaeStates.move;
             }else {
-                Debug.Log("match");
+//                Debug.Log("match");
             }
             otherProp = null;   
         }
