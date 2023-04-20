@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 731e2e78337dc7c4d8ad388b779aa45f, type: 3}
+  m_Name: Level 2
+  m_EditorClassIdentifier: 
+  xSice: 4
+  ySice: 4
+  propsSprites:
+  - {fileID: 3982351111288638337, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
+  - {fileID: 8373072205125733375, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
+  - {fileID: -3406970129627983305, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
+  - {fileID: -2446255709830742794, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
+  scoreGoals: 2c01000058020000b0040000
+  ingredienstSprites:
+  - {fileID: 21300000, guid: 44a0c196c3454c04b820ec993ed9d39e, type: 3}
+  - {fileID: 21300000, guid: 2381473a1a321de4ca108f321c797bb1, type: 3}
+  - {fileID: 21300000, guid: 4178701e059242d45b4b255237949432, type: 3}
+  - {fileID: 21300000, guid: 694ddf40c277afb4f9baff9af984338f, type: 3}
+  moves: 10
+  CauldronSection: {fileID: 5588795822031179486, guid: 7d71b3ec5dfa1b14e8941bd889b6f631, type: 3}
