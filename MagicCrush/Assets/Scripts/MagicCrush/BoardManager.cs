@@ -49,9 +49,7 @@ public class BoardManager : MonoBehaviour
     public bool isShifting{get; set;} // esto quiere decir que 
     //puede asignar un valor o evaluar un valor pero solo desde la clase.
 
-    private void Awake() {
-       PutLevelInfo();
-    }
+    
 
     void Start()
     {
@@ -66,15 +64,34 @@ public class BoardManager : MonoBehaviour
         }
 
         CreateInitBoard();
-
         ScreenTransform = FindObjectOfType<ScreenTransform>();
     }
 
-    public void CreateInitBoard(){
+    public void CreateInitBoard() {
+       StartCoroutine(CreateInitBoardCo());
+    }
+    public IEnumerator CreateInitBoardCo(){
+
+        Debug.Log("reset old props");
 
         DestroyAll("prop");
 
+        Debug.Log("Info colection");
+
+        PutLevelInfo();
+        
+        Debug.Log("Info colected");
+
+        yield return new WaitForSeconds(.5f);
+        
+        if (ScreenTransform != null)
+        {
+            ScreenTransform.RePositionCamera(xSize - 1, ySize - 1);
+        }
+
         CauldronManager.ShareInstance.InitCauldron();
+
+        yield return new WaitForSeconds(.5f);
         
         props = new GameObject[xSize, ySize];
         float startX = this.transform.position.x;
@@ -295,11 +312,13 @@ public class BoardManager : MonoBehaviour
             GUIManager.sharedInstance.Score += 20;
             yield return new WaitForSeconds(.4f);
         }
-/*
+
         if (IsDeadLock())
         {
             Debug.Log("DEAD");
-        }*/
+        }else{
+            Debug.Log("HAY MATCH");
+        }
         yield return new WaitForSeconds(.5f);
         currentState = GmaeStates.move;
     }
@@ -316,9 +335,12 @@ public class BoardManager : MonoBehaviour
 
     public void PutLevelInfo(){
 
+        
          if (world != null)
         {
             if(world.levels[currentLevel] != null){
+
+                Debug.Log("Info colection Funtion");
 
                 xSize = world.levels[currentLevel].xSice;
                 ySize = world.levels[currentLevel].ySice;
@@ -340,9 +362,10 @@ public class BoardManager : MonoBehaviour
     }
 
     private void SwitchProps(int row, int column, Vector2 direction){
+        //ebug.Log("Swipea");
         // here board is gonna change position to check if theres is matche if not its a deadlock
-        GameObject holder = props[row + (int) direction.x, row + (int) direction.y];
-        props[row + (int) direction.x, row + (int) direction.y] = props[row,column];
+        GameObject holder = props[row + (int) direction.x, column + (int) direction.y];
+        props[row + (int) direction.x, column + (int) direction.y] = props[row,column];
         props[row,column] = holder;
     }
 
@@ -366,7 +389,7 @@ public class BoardManager : MonoBehaviour
                     if (j < ySize - 2)
                     {
                         if (props[i, j + 1].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id &&
-                        props[i, j + 2].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id)
+                            props[i, j + 2].GetComponent<Prop>().id == props[i, j].GetComponent<Prop>().id)
                         {
                             return true;
                         }

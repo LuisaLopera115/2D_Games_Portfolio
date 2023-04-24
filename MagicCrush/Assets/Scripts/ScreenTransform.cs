@@ -9,7 +9,7 @@ public class ScreenTransform : MonoBehaviour
 
     void Start()
     {
-        RePositionCamera(5f -1, 5f -1);
+        RePositionCamera(3f -1, 3f -1);
     }
 
     public void RePositionCamera(float x , float y){
@@ -23,7 +23,9 @@ public class ScreenTransform : MonoBehaviour
                 Camera.main.orthographicSize = (BoardManager.ShareInstance.xSize/2 + padding) / aspectRadio;
             }else
             {
-                Camera.main.orthographicSize = BoardManager.ShareInstance.ySize/2 + padding;
+
+
+                Camera.main.orthographicSize = BoardManager.ShareInstance.ySize+1;
             }
         }
         

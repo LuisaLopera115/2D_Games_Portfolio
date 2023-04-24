@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 731e2e78337dc7c4d8ad388b779aa45f, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  xSice: 4
-  ySice: 4
+  xSice: 3
+  ySice: 3
   propsSprites:
   - {fileID: 3982351111288638337, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
   - {fileID: 8373072205125733375, guid: fe7680f5f2fba4a44bc5376c376110c8, type: 3}
@@ -23,5 +23,5 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 44a0c196c3454c04b820ec993ed9d39e, type: 3}
   - {fileID: 21300000, guid: 2381473a1a321de4ca108f321c797bb1, type: 3}
   - {fileID: 21300000, guid: 4178701e059242d45b4b255237949432, type: 3}
-  moves: 2
+  moves: 30
   CauldronSection: {fileID: 5181027564343516449, guid: 23214f68387163843bffaaf8e46c9a1e, type: 3}

@@ -28,20 +28,12 @@ public class CauldronManager : MonoBehaviour
 
         //ingredients = null;
         //cauldrons = null;
-        Debug.Log("reset the array for cauldrons and ingredients");
+        //Debug.Log("reset the array for cauldrons and ingredients");
         
         ingredients = GameObject.FindGameObjectsWithTag("Ingredient");
         cauldrons = GameObject.FindGameObjectsWithTag("Cauldron");
-
-        for (int i = 0; i < ingredients.Length; i++)
-        {
-            if (ingredients[i] != null)
-            {
-                Debug.Log(ingredients[i]);
-            }
-        }
         
-        Debug.Log(" finish reseting the array for cauldrons and ingredients");
+//        Debug.Log(" finish reseting the array for cauldrons and ingredients");
         idx = -1;
          
          for (int i = 0; i < ingredients.Length; i++)
@@ -58,7 +50,7 @@ public class CauldronManager : MonoBehaviour
             ingredients[i].GetComponent<IngredientProp>().id = idx;
          }
 
-         Debug.Log(" random INGREDIENTS");
+//         Debug.Log(" random INGREDIENTS");
     }
 
     public void CompareIngredientsWhitMatch(){
@@ -129,20 +121,20 @@ public class CauldronManager : MonoBehaviour
 
         deledeCualdrons();
         yield return new WaitForSeconds (0.4f);
-        Debug.Log("INIT CAULDRON");
+        //Debug.Log("INIT CAULDRON");
         GameObject newProp = Instantiate(BoardManager.ShareInstance.world.levels[BoardManager.ShareInstance.currentLevel].CauldronSection,
                                 new Vector2(0,0),Quaternion.identity);
         newProp.transform.parent = this.transform;
         newProp.GetComponent<RectTransform>().position = new Vector3(540,250);
-        Debug.Log("---- "+ newProp.name);
-        Debug.Log("ready all CAULDRON");
+        //Debug.Log("---- "+ newProp.name);
+        //Debug.Log("ready all CAULDRON");
         yield return new WaitForSeconds (0.4f);
         InitIngredients();
     }
 
     private void deledeCualdrons(){
 
-        Debug.Log("RESET");
+        //Debug.Log("RESET");
 
         for (int i = transform.childCount - 1; i >= 0; i--)
         {

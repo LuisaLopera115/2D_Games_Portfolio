@@ -31,38 +31,31 @@ public class LevelManager : MonoBehaviour
         {
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 8;
-            
-            BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 10)
         {
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 9;
             
-            BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 15){
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 10;
             
-            BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 20){
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 11;
             
-            BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 25){
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 12;
-            BoardManager.ShareInstance.CreateInitBoard();
         }
         else if (intLevel < 30){
             BoardManager.ShareInstance.xSize = 7;
             BoardManager.ShareInstance.ySize = 13;
             
-            BoardManager.ShareInstance.CreateInitBoard();
         }
     }
 }
