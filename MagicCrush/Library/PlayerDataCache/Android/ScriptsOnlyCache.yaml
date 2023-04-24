@@ -10,6 +10,7 @@ ScriptsOnlyBuild:
     - IngredientProp
     - Level
     - Prop
+    - ScreenTransform
     - World
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
@@ -26,7 +27,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
     Unity.CollabProxy.Editor.dll:
     - Unity.Cloud.Collaborate.UserInterface.CollaborateWindow
-    - Unity.Cloud.Collaborate.UserInterface.WindowCache
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
@@ -83,21 +83,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3114}
     - Class: 114
-      Script: {instanceID: 3214}
+      Script: {instanceID: 3132}
     - Class: 114
-      Script: {instanceID: 3466}
+      Script: {instanceID: 3216}
     - Class: 114
-      Script: {instanceID: 3598}
+      Script: {instanceID: 3468}
     - Class: 114
-      Script: {instanceID: 3782}
+      Script: {instanceID: 3600}
     - Class: 114
-      Script: {instanceID: 3980}
+      Script: {instanceID: 3784}
     - Class: 114
-      Script: {instanceID: 4028}
+      Script: {instanceID: 3982}
     - Class: 114
-      Script: {instanceID: 4180}
+      Script: {instanceID: 4030}
     - Class: 114
-      Script: {instanceID: 4694}
+      Script: {instanceID: 4182}
+    - Class: 114
+      Script: {instanceID: 4696}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -273,7 +275,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: b8f20416ec5325e65be1d83f54595f64
+      Hash: 4f0e9afff7c6316e524b4f0035e5aaf1
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CauldronManager
@@ -321,10 +323,16 @@ ScriptsOnlyBuild:
     className: BombsManager
   - hash:
       serializedVersion: 2
-      Hash: 4a433899971bff1a9d203d6fc1165fbc
+      Hash: de8ca4a9ad5306e9c0d31efcd8de6c32
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: IngredientProp
+  - hash:
+      serializedVersion: 2
+      Hash: c81fda07cd66157df45550ae7a2a0db2
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ScreenTransform
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -429,7 +437,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 6017398bcc9a2ca08151cd0afc3f8301
+      Hash: 5cd4e4951dde5a17f089884db73af158
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Cauldron
@@ -465,7 +473,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 43ddef681a8f811e59e11be0d3ba6c39
+      Hash: 7536cdb0b42ab7a6409c11e7da9bc70a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: BoardManager
@@ -495,7 +503,7 @@ ScriptsOnlyBuild:
     className: BannerPlaceholder
   - hash:
       serializedVersion: 2
-      Hash: 555b07e1c196ccab662237168f07e9e9
+      Hash: a4bbf25f7544bfb3f3dc2de2f0667ca4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Level
@@ -579,7 +587,7 @@ ScriptsOnlyBuild:
     className: SignalTrack
   - hash:
       serializedVersion: 2
-      Hash: 23872d3afe60a2bfcadba838b2c53908
+      Hash: 9c1d03ee2777af910f912053abd954e6
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GUIManager
@@ -736,4 +744,4 @@ ScriptsOnlyBuild:
   platform: 13
   scenePathNames:
   - Assets/Scenes/MagicCrush.unity
-  playerPath: C:/Users/Trabajo/Documents/Luisa_Git/2D_Games_Portfolio/Versiones/1.2.0.aab
+  playerPath: C:/Users/Trabajo/Documents/Luisa_Git/2D_Games_Portfolio/Versiones/1.2.1.aab
